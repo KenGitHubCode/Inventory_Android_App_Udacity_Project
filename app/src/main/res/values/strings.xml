@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Inventory_App_Udacity_Project</string>
+
+    <!-- Label for overflow menu option that inserts fake data into the app [CHAR LIMIT=20] -->
+    <string name="action_insert_dummy_data">Insert Dummy Data</string>
+
+    <!-- Label for overflow menu option that deletes all data in the app [CHAR LIMIT=20] -->
+    <string name="action_delete_all_entries">Delete All entries</string>
+</resources>
