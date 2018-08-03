@@ -12,17 +12,17 @@ import static com.example.android.inventory_app_udacity_project.data.BookContrac
  */
 public class BookDBHelper extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "store.db";
-    public static final int DATABASE_VERSION = 1;
-    public static final String COMMA_SEP = ",";
-    public static final String TEXT_TYPE = "TEXT";
-    public static final String INT_TYPE = "INT";
+    private static final String DATABASE_NAME = "store.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String COMMA_SEP = ",";
+    private static final String TEXT_TYPE = "TEXT";
+    private static final String INT_TYPE = "INT";
 
-    public static final String SQL_DELETE_ENTRIES =
+    private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS" + " " + TABLE_NAME;
 
     // Identify Logging Source
-    public static final String LOG_TAG = BookDBHelper.class.getName();
+    private static final String LOG_TAG = BookDBHelper.class.getName();
 
     //constructor
     public BookDBHelper(Context context) {
@@ -56,7 +56,6 @@ public class BookDBHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_ENTRIES);
         onCreate(db);
     }
 }
