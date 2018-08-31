@@ -66,5 +66,8 @@
     <string name="sample_summary">The Player of Games is a science fiction novel by Scottish writer Iain M. Banks, first published in 1988. It was the second published Culture novel. A film version was planned by Pathé in the 1990s, but was abandoned</string>
     <string name="sample_supplier">Ken\'s House of Books</string>
     <string name="sample_supplier_phone">888.555.2222</string>
+    <string name="not_available">Not Available</string>
+    <string name="no_product_in_stock">\"The book is out of stock.\"</string>
+    <string name="editor_sold_success">Sold!</string>
 
 </resources>

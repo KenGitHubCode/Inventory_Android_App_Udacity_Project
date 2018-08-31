@@ -4,4 +4,5 @@
 
     <!-- Common margin value used throughout the app -->
     <dimen name="activity_margin">16dp</dimen>
+    <dimen name="static_width_right_column_list_item">66dp</dimen>
 </resources>

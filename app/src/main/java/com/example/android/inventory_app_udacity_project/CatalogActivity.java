@@ -61,11 +61,10 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         });
 
         // Find ListView to populate
-        ListView myListView = (ListView) findViewById(R.id.catalogactivity_text_view);
+        ListView myListView = (ListView) findViewById(R.id.catalogactivity_list_view);
         // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
         View emptyView = findViewById(R.id.empty_view);
         myListView.setEmptyView(emptyView);
-
 
         // Create an empty adapter we will use to display the loaded data.
         // We pass null for the cursor, then update it in onLoadFinished()
@@ -76,6 +75,7 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+
                 Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
 
                 // Create an URI for specific item that was clicked and starts activity
@@ -113,7 +113,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         itemValues.put(BookEntry.COLUMN_SUPPLIER_NAME, getString(R.string.sample_supplier));
         itemValues.put(BookEntry.COLUMN_SUPPLIER_PHONE, getString(R.string.sample_supplier_phone));
 
-        Log.i(LOG_TAG,"INSERTITEM item Values: " + itemValues);
         Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, itemValues);
 
         // Show a toast message depending on whether or not the insertion was successful
@@ -172,5 +171,36 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
     private void deleteAllEntries() {
         int rowsDeleted = getContentResolver().delete(BookEntry.CONTENT_URI, null, null);
         Log.v(LOG_TAG, rowsDeleted + getString(R.string.rows_deleted_message));
+    }
+
+    /**
+     * Method to decrease quantity for the item and update the view
+     *
+     * @param currentBook
+     * @param currentBookQuantity
+     */
+    public void quantityDecrement(int currentBook, int currentBookQuantity) {
+
+        // Decrement the variable passed in by the button listener in the adapter class
+        currentBookQuantity--;
+
+        // Rubics: " (include logic so that no negative quantities are displayed)."
+        if (currentBookQuantity >= 0) {
+            // Create ContentValues for only the quantity field
+            ContentValues values = new ContentValues();
+            values.put(BookEntry.COLUMN_QUANTITY, currentBookQuantity);
+
+            // Update the database for only the quantity field
+            Uri updateUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, currentBook);
+            int rowsAffected = getContentResolver().update(updateUri, values, null, null);
+            // Otherwise, the insertion was successful and we can display a toast.
+            if (rowsAffected == 1) {
+                Toast.makeText(this, R.string.editor_sold_success, Toast.LENGTH_SHORT).show();
+            } else {  // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, R.string.editor_action_failed, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, R.string.no_product_in_stock, Toast.LENGTH_SHORT).show();
+        }
     }
 }

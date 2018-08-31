@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2016 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
@@ -9,10 +8,8 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
--->
-<!-- Layout for the editor -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+--><!-- Layout for the editor -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,30 +25,30 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/category_overview"
-            style="@style/CategoryStyle" />
+            style="@style/CategoryStyle"
+            android:text="@string/category_overview" />
 
         <!-- Input fields -->
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="4dp">
 
             <!-- Name field -->
             <EditText
                 android:id="@+id/edit_entry_name"
+                style="@style/EditorFieldStyle"
                 android:hint="@string/hint_entry_name"
-                android:inputType="textCapWords"
-                style="@style/EditorFieldStyle" />
+                android:inputType="textCapWords" />
 
-            <!-- Breed field -->
+            <!-- Summary field -->
             <EditText
                 android:id="@+id/edit_entry_summary"
+                style="@style/EditorFieldStyle"
                 android:hint="@string/hint_entry_summary"
-                android:inputType="textCapWords"
-                style="@style/EditorFieldStyle" />
+                android:inputType="textCapWords" />
         </LinearLayout>
     </LinearLayout>
 
@@ -63,23 +60,42 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/category_quantity"
-            style="@style/CategoryStyle" />
+            style="@style/CategoryStyle"
+            android:text="@string/category_quantity" />
 
         <!-- Input fields -->
-        <RelativeLayout
-            android:layout_height="wrap_content"
+        <LinearLayout
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
             android:paddingLeft="4dp">
 
-        <EditText
-            android:id="@+id/edit_entry_quantity"
-            android:hint="@string/hint_entry_quantity"
-            android:inputType="textCapWords"
-            style="@style/EditorFieldStyle"
-            />
-        </RelativeLayout>
+            <Button
+                android:id="@+id/decrement_editor_view_button"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/ic_minus"
+                android:backgroundTint="@color/editorColorPrimary"
+                />
+
+            <EditText
+                android:id="@+id/edit_entry_quantity"
+                style="@style/EditorFieldStyle"
+                android:textAlignment="center"
+                android:layout_weight="2"
+                android:hint="@string/hint_entry_quantity"
+                android:inputType="number" />
+
+            <Button
+                android:id="@+id/increment_editor_view_button"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/ic_add"
+                android:backgroundTint="@color/editorColorPrimary"
+                />
+
+
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Measurement category -->
@@ -90,27 +106,27 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/category_price"
-            style="@style/CategoryStyle" />
+            style="@style/CategoryStyle"
+            android:text="@string/category_price" />
 
         <!-- Input fields -->
         <RelativeLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
             android:paddingLeft="4dp">
 
-            <!-- Weight field -->
+            <!-- Price field -->
             <EditText
                 android:id="@+id/edit_entry_price"
+                style="@style/EditorFieldStyle"
                 android:hint="@string/hint_entry_price"
-                android:inputType="numberDecimal"
-                style="@style/EditorFieldStyle" />
+                android:inputType="numberDecimal" />
 
-            <!-- Units for weight (kg) -->
+            <!-- Units  -->
             <TextView
-                android:text="@string/unit_entry_currency"
-                style="@style/EditorUnitsStyle"/>
+                style="@style/EditorUnitsStyle"
+                android:text="@string/unit_entry_currency" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -122,34 +138,73 @@
 
         <!-- Label -->
         <TextView
-            android:text="@string/supplier"
-            style="@style/CategoryStyle" />
+            style="@style/CategoryStyle"
+            android:text="@string/supplier" />
 
         <!-- Input fields -->
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:paddingLeft="4dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="4dp">
 
             <!-- Name field -->
             <EditText
                 android:id="@+id/edit_entry_supplier_name"
+                style="@style/EditorFieldStyle"
                 android:hint="@string/hint_entry_suppliername"
-                android:inputType="textCapWords"
-                style="@style/EditorFieldStyle" />
+                android:inputType="textCapWords" />
 
-            <!-- Breed field -->
-            <EditText
-                android:id="@+id/edit_entry_supplier_phone"
-                android:hint="@string/hint_entry_supplier_phone"
-                android:inputType="textCapWords"
-                style="@style/EditorFieldStyle" />
+            <!-- Supplier field -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingLeft="4dp">
+
+                <EditText
+                    android:id="@+id/edit_entry_supplier_phone"
+                    style="@style/EditorFieldStyle"
+                    android:hint="@string/hint_entry_supplier_phone"
+                    android:layout_weight="2"
+                    android:inputType="textCapWords" />
+
+                <Button
+                    android:id="@+id/call_intent_button"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:backgroundTint="@color/editorColorPrimary"
+                    android:background="@drawable/ic_call"
+                    />
+
+            </LinearLayout>
+
         </LinearLayout>
     </LinearLayout>
 
+    <!-- Delete section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:padding="@dimen/activity_margin"
+        android:orientation="vertical">
 
+        <!-- Vertical line to seperate delete button visually -->
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="@color/editorColorPrimaryDark" />
 
+        <Button
+            android:id="@+id/action_delete_button"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:backgroundTint="@color/colorAccent"
+            android:background="@drawable/ic_delete"
+            android:layout_gravity="center_horizontal"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

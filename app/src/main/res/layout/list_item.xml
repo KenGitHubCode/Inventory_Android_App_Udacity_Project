@@ -1,35 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <!-- Layout for a single list item in the list of pets -->
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/activity_margin">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="22dp"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-medium"
-        android:textAppearance="?android:textAppearanceMedium"
-        android:textColor="#2B3D4D"  />
+        <TextView
+            android:id="@+id/name_list_view"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/hint_entry_name"
+            style="@style/list_header_row_style" />
 
-    <TextView
-        android:id="@+id/summary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif"
-        android:textAppearance="?android:textAppearanceSmall"
-        android:textColor="#AEB6BD"  />
+        <TextView
+            android:id="@+id/price_list_view"
+            android:layout_width="@dimen/static_width_right_column_list_item"
+            android:text="@string/hint_entry_name"
+            style="@style/list_header_row_style" />
 
-    </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/summary"
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="@string/hint_entry_name"
+            style="@style/list_subtext_row_style" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Note focusable needed to prevent onclick of item being disabled due to button in layout -->
+            <Button
+                android:id="@+id/sold_list_item"
+                android:layout_width="@dimen/static_width_right_column_list_item"
+                android:layout_height="@dimen/static_width_right_column_list_item"
+                android:focusable="false"
+                android:background="@drawable/ic_sold"
+                />
+
+            <TextView
+                android:id="@+id/quantity_list_item"
+                android:layout_width="@dimen/static_width_right_column_list_item"
+                android:layout_height="wrap_content"
+                android:text="@string/hint_entry_name"
+                style="@style/list_subtext_row_style" />
+
+        </LinearLayout>
+    </LinearLayout>
 
 </LinearLayout>

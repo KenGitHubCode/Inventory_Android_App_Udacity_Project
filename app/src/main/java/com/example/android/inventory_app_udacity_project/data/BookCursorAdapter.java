@@ -10,9 +10,11 @@ import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 
+import com.example.android.inventory_app_udacity_project.CatalogActivity;
 import com.example.android.inventory_app_udacity_project.R;
 
 import static com.example.android.inventory_app_udacity_project.data.BookContract.BookEntry;
@@ -60,14 +62,19 @@ public class BookCursorAdapter extends CursorAdapter {
      *                correct row.
      */
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
+    public void bindView(View view, final Context context, Cursor cursor) {
 
         // Assign descriptive variable name to view
         View listItemView = view;
 
         // Initialize the list_item text views
-        TextView nameTextView = (TextView) listItemView.findViewById(R.id.name);
+        TextView nameTextView = (TextView) listItemView.findViewById(R.id.name_list_view);
         TextView summaryTextView = (TextView) listItemView.findViewById(R.id.summary);
+        TextView quantityTextView = (TextView) listItemView.findViewById(R.id.quantity_list_item);
+        TextView priceTextView = (TextView) listItemView.findViewById(R.id.price_list_view);
+        TextView supplierTextView = (TextView) listItemView.findViewById(R.id.edit_entry_supplier_phone);
+        TextView supplierPhoneTextView = (TextView) listItemView.findViewById(R.id.edit_entry_supplier_phone);
+        Button purchaseButton = (Button) listItemView.findViewById(R.id.sold_list_item);
 
         // Figure out the index of each column
         int idColumnIndex = cursor.getColumnIndex(BookEntry._ID);
@@ -75,26 +82,34 @@ public class BookCursorAdapter extends CursorAdapter {
         int summaryColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUMMARY);
         int priceColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_PRICE);
         int quantityColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_QUANTITY);
-        int supplierNameColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_NAME);
-        int supplierPhoneColumnIndex = cursor.getColumnIndex(BookEntry.COLUMN_SUPPLIER_PHONE);
 
         // Use that index to extract the String or Int value of the word
         // at the current row the cursor is on.
-        int currentID = cursor.getInt(idColumnIndex);
+        final int currentID = cursor.getInt(idColumnIndex);
         String currentName = cursor.getString(nameColumnIndex);
         String currentSummary = cursor.getString(summaryColumnIndex);
-        int currentPrice = cursor.getInt(priceColumnIndex);
-        int currentQuantity = cursor.getInt(quantityColumnIndex);
-        String CurrentSupplierName = cursor.getString(supplierNameColumnIndex);
-        String CurrentSupplierPhone = cursor.getString(supplierPhoneColumnIndex);
+        double currentPrice = cursor.getDouble(priceColumnIndex);
+        final int currentQuantity = cursor.getInt(quantityColumnIndex);
 
         // Bind the variables to the views
         nameTextView.setText(currentName);
         if (currentSummary.isEmpty()) {
-            currentSummary = "No Summary Available";
+            currentSummary = context.getString(R.string.not_available);
         }
         summaryTextView.setText(currentSummary);
+        priceTextView.setText("$" + String.valueOf(currentPrice));
+        quantityTextView.setText("Qty: " + String.valueOf(currentQuantity));
+        // Note that there is no need to bind the sold button
 
-    }
+        // Create onclick listener for the Sold button
+        purchaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CatalogActivity Activity = (CatalogActivity) context;
+                Activity.quantityDecrement(currentID, currentQuantity);
+            }
+
+        });
+    };
 }
 

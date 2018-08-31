@@ -6,9 +6,11 @@ package com.example.android.inventory_app_udacity_project;
 
 import android.app.AlertDialog;
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
@@ -20,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -51,6 +54,11 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     private EditText mSupplierEditText;
     // EditText field to enter the entry supplier phone number
     private EditText mSupplierPhoneEditText;
+    // Buttons
+    private Button mDecrementQuantityButton;
+    private Button mIncrementQuantityButton;
+    private Button mCallSupplier;
+    private Button mDeleteEntry;
 
     private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
         @Override
@@ -104,6 +112,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mQuantityEditText.setOnTouchListener(mTouchListener);
         mSupplierEditText.setOnTouchListener(mTouchListener);
         mSupplierPhoneEditText.setOnTouchListener(mTouchListener);
+
+        // Assign buttons and then set onClickListners
+        mDecrementQuantityButton = (Button) findViewById(R.id.decrement_editor_view_button);
+        mIncrementQuantityButton = (Button) findViewById(R.id.increment_editor_view_button);
+        mCallSupplier = (Button) findViewById(R.id.call_intent_button);
+        mDeleteEntry = (Button) findViewById(R.id.action_delete_button);
+
     }
 
     /*
@@ -119,9 +134,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             quantityInput = Integer.parseInt(mQuantityEditText.getText().toString().trim());
         }
         // Price should default to zero if not entered.  isEmpty check performed to prevent errors
-        int priceInput = 0;
+        Double priceInput = 0.0;
         if (!mPriceEditText.getText().toString().trim().isEmpty()) {
-            priceInput = Integer.parseInt(mPriceEditText.getText().toString().trim());
+            priceInput = Double.parseDouble(mPriceEditText.getText().toString().trim());
         }
         String supplierNameInput = mSupplierEditText.getText().toString().trim();
         String supplierPhoneInput = mSupplierPhoneEditText.getText().toString().trim();
@@ -130,7 +145,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Assuming user pressed save on mistake, nothing will be saved in this case.
         if (nameInput.isEmpty() &&
                 summaryInput.isEmpty() &&
-                quantityInput==0 &&
+                quantityInput == 0 &&
                 priceInput == 0
                 ) {
             return;
@@ -167,13 +182,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             int newInt = getContentResolver().update(currentEntryUri, petValues, null, null);
 
             // Show a toast message depending on whether or not the insertion was successful
+            // Otherwise, the insertion was successful and we can display a toast.
             if (newInt == 1) {
-                // If the new content URI is null, then there was an error with insertion.
                 Toast.makeText(this, getString(R.string.editor_update_success),
                         Toast.LENGTH_SHORT).show();
             } else {
-                // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.action_insert_saved),
+                // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, getString(R.string.editor_action_failed),
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -246,12 +261,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
 
         // Create and assign variables for the data
+        final int currentID = data.getInt(data.getColumnIndex(BookEntry._ID));
         String cursorName = data.getString(data.getColumnIndex(BookEntry.COLUMN_NAME));
         String cursorSummary = data.getString(data.getColumnIndex(BookEntry.COLUMN_SUMMARY));
-        int cursorQuantity = data.getInt(data.getColumnIndex(BookEntry.COLUMN_QUANTITY));
+        final int cursorQuantity = data.getInt(data.getColumnIndex(BookEntry.COLUMN_QUANTITY));
         int cursorPrice = data.getInt(data.getColumnIndex(BookEntry.COLUMN_PRICE));
         String cursorSupplier = data.getString(data.getColumnIndex(BookEntry.COLUMN_SUPPLIER_NAME));
-        String cursorSupplierPhone = data.getString(data.getColumnIndex(BookEntry.COLUMN_SUPPLIER_PHONE));
+        final String cursorSupplierPhone = data.getString(data.getColumnIndex(BookEntry.COLUMN_SUPPLIER_PHONE));
 
         // Auto populate the Edit Text fields
         mNameEditText.setText(cursorName);
@@ -261,6 +277,38 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mPriceEditText.setText(Integer.toString(cursorPrice));
         mSupplierEditText.setText(cursorSupplier);
         mSupplierPhoneEditText.setText(cursorSupplierPhone);
+
+        // Create onclick listener for a quantity button
+        mDecrementQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quantityDecrement(currentID, cursorQuantity);
+            }
+        });
+        // Create onclick listener for the a quantity button
+        mIncrementQuantityButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                quantityIncrement(currentID, cursorQuantity);
+            }
+        });
+        // Create onclick listener for the call button
+        mCallSupplier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makeCall(cursorSupplierPhone);
+            }
+
+        });
+        // Create onclick listener for the Delete Entry button
+        mDeleteEntry.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDeleteConfirmationDialog();
+            }
+
+        });
+
     }
 
     //loader callback method onLoaderReset, and clear the input fields.
@@ -380,5 +428,74 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         //Exit activity, jumping back to previous activity
         finish();
     }
+
+    /**
+     * Method to decrease quantity for the item and update the view
+     *
+     * @param currentBook
+     * @param currentBookQuantity
+     */
+    public void quantityDecrement(int currentBook, int currentBookQuantity) {
+
+        // Decrement the variable passed in by the button listener in the adapter class
+        currentBookQuantity--;
+
+        // Rubics: " (include logic so that no negative quantities are displayed)."
+        if (currentBookQuantity >= 0) {
+            // Create ContentValues for only the quantity field
+            ContentValues values = new ContentValues();
+            values.put(BookEntry.COLUMN_QUANTITY, currentBookQuantity);
+
+            // Update the database for only the quantity field
+            Uri updateUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, currentBook);
+            int rowsAffected = getContentResolver().update(updateUri, values, null, null);
+            // Otherwise, the insertion was successful and we can display a toast.
+            if (rowsAffected == 1) {
+                Toast.makeText(this, R.string.editor_sold_success, Toast.LENGTH_SHORT).show();
+            } else {  // If the new content URI is null, then there was an error with insertion.
+                Toast.makeText(this, R.string.editor_action_failed, Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(this, R.string.no_product_in_stock, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Method to increase quantity for the item and update the view
+     *
+     * @param currentBook
+     * @param currentBookQuantity
+     */
+    public void quantityIncrement(int currentBook, int currentBookQuantity) {
+
+        // Decrement the variable passed in by the button listener in the adapter class
+        currentBookQuantity++;
+
+        // Create ContentValues for only the quantity field
+        ContentValues values = new ContentValues();
+        values.put(BookEntry.COLUMN_QUANTITY, currentBookQuantity);
+
+        // Update the database for only the quantity field
+        Uri updateUri = ContentUris.withAppendedId(BookEntry.CONTENT_URI, currentBook);
+        int rowsAffected = getContentResolver().update(updateUri, values, null, null);
+        // Otherwise, the insertion was successful and we can display a toast.
+        if (rowsAffected == 1) {
+            Toast.makeText(this, R.string.editor_sold_success, Toast.LENGTH_SHORT).show();
+        } else {  // If the new content URI is null, then there was an error with insertion.
+            Toast.makeText(this, R.string.editor_action_failed, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    /**
+     * Sends the supplier number to the phone app, used DIAL instead of CALL to allow user to decide
+     * to make the call or not in the phone app.
+     * @param   mSupplierPhoneNumber
+     * @returns none
+     */
+    public void makeCall(String mSupplierPhoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", mSupplierPhoneNumber.trim(), null));
+        startActivity(intent);
+        }
 
 }
