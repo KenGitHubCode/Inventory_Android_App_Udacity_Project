@@ -132,12 +132,19 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         int quantityInput = 0;
         if (!mQuantityEditText.getText().toString().trim().isEmpty()) {
             quantityInput = Integer.parseInt(mQuantityEditText.getText().toString().trim());
+        } else {
+            Toast.makeText(this, R.string.data_required_message, Toast.LENGTH_SHORT).show();
+            return;
         }
         // Price should default to zero if not entered.  isEmpty check performed to prevent errors
         Double priceInput = 0.0;
         if (!mPriceEditText.getText().toString().trim().isEmpty()) {
             priceInput = Double.parseDouble(mPriceEditText.getText().toString().trim());
+        } else {
+            Toast.makeText(this, R.string.data_required_message, Toast.LENGTH_SHORT).show();
+            return;
         }
+
         String supplierNameInput = mSupplierEditText.getText().toString().trim();
         String supplierPhoneInput = mSupplierPhoneEditText.getText().toString().trim();
 
@@ -146,25 +153,36 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (nameInput.isEmpty() &&
                 summaryInput.isEmpty() &&
                 quantityInput == 0 &&
-                priceInput == 0
+                priceInput == 0.0 &&
+                supplierNameInput.isEmpty()
                 ) {
             return;
         }
+        // Check if required fields are empty, returns if so and display's toast message
+        if (nameInput.isEmpty() || supplierNameInput.isEmpty() || supplierPhoneInput.isEmpty()) {
+            Toast.makeText(this, R.string.data_required_message, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Summary is not required, if null, a blank string is assigned.
+        if (summaryInput.isEmpty()) {
+            summaryInput = "";
+        }
 
         // Create new map of values to input into the table
-        ContentValues petValues = new ContentValues();
-        petValues.put(BookEntry.COLUMN_NAME, nameInput);
-        petValues.put(BookEntry.COLUMN_SUMMARY, summaryInput);
-        petValues.put(BookEntry.COLUMN_QUANTITY, quantityInput);
-        petValues.put(BookEntry.COLUMN_PRICE, priceInput);
-        petValues.put(BookEntry.COLUMN_SUPPLIER_NAME, supplierNameInput);
-        petValues.put(BookEntry.COLUMN_SUPPLIER_PHONE, supplierPhoneInput);
+        ContentValues entryValues = new ContentValues();
+        entryValues.put(BookEntry.COLUMN_NAME, nameInput);
+        entryValues.put(BookEntry.COLUMN_SUMMARY, summaryInput);
+        entryValues.put(BookEntry.COLUMN_QUANTITY, quantityInput);
+        entryValues.put(BookEntry.COLUMN_PRICE, priceInput);
+        entryValues.put(BookEntry.COLUMN_SUPPLIER_NAME, supplierNameInput);
+        entryValues.put(BookEntry.COLUMN_SUPPLIER_PHONE, supplierPhoneInput);
 
         // Check if uri is null and set title to "Add.."
         // else set the title to the "Edit..." text
         if (currentEntryUri == null) {  // ADD NEW ENTRY instead of update an existing one
             // Insert a new pet into the provider, returning the content URI for the new pet.
-            Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, petValues);
+            Uri newUri = getContentResolver().insert(BookEntry.CONTENT_URI, entryValues);
 
             // Show a toast message depending on whether or not the insertion was successful
             if (newUri == null) {
@@ -179,7 +197,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         } else { // UPDATE instead of ADD
 
-            int newInt = getContentResolver().update(currentEntryUri, petValues, null, null);
+            int newInt = getContentResolver().update(currentEntryUri, entryValues, null, null);
 
             // Show a toast message depending on whether or not the insertion was successful
             // Otherwise, the insertion was successful and we can display a toast.
@@ -490,12 +508,13 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /**
      * Sends the supplier number to the phone app, used DIAL instead of CALL to allow user to decide
      * to make the call or not in the phone app.
-     * @param   mSupplierPhoneNumber
+     *
+     * @param mSupplierPhoneNumber
      * @returns none
      */
     public void makeCall(String mSupplierPhoneNumber) {
         Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", mSupplierPhoneNumber.trim(), null));
         startActivity(intent);
-        }
+    }
 
 }

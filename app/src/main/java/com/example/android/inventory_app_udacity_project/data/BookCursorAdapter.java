@@ -72,8 +72,6 @@ public class BookCursorAdapter extends CursorAdapter {
         TextView summaryTextView = (TextView) listItemView.findViewById(R.id.summary);
         TextView quantityTextView = (TextView) listItemView.findViewById(R.id.quantity_list_item);
         TextView priceTextView = (TextView) listItemView.findViewById(R.id.price_list_view);
-        TextView supplierTextView = (TextView) listItemView.findViewById(R.id.edit_entry_supplier_phone);
-        TextView supplierPhoneTextView = (TextView) listItemView.findViewById(R.id.edit_entry_supplier_phone);
         Button purchaseButton = (Button) listItemView.findViewById(R.id.sold_list_item);
 
         // Figure out the index of each column
@@ -110,6 +108,8 @@ public class BookCursorAdapter extends CursorAdapter {
             }
 
         });
-    };
+    }
+
+    ;
 }
 

@@ -69,5 +69,6 @@
     <string name="not_available">Not Available</string>
     <string name="no_product_in_stock">\"The book is out of stock.\"</string>
     <string name="editor_sold_success">Sold!</string>
+    <string name="data_required_message">All data fields are required.</string>
 
 </resources>
