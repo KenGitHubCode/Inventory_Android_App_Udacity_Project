@@ -168,7 +168,7 @@
                     style="@style/EditorFieldStyle"
                     android:hint="@string/hint_entry_supplier_phone"
                     android:layout_weight="2"
-                    android:inputType="textCapWords" />
+                    android:inputType="phone" />
 
                 <Button
                     android:id="@+id/call_intent_button"

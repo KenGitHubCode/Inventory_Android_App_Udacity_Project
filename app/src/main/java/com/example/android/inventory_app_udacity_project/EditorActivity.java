@@ -193,6 +193,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 // Otherwise, the insertion was successful and we can display a toast.
                 Toast.makeText(this, getString(R.string.action_insert_saved),
                         Toast.LENGTH_SHORT).show();
+                finish();
             }
 
         } else { // UPDATE instead of ADD
@@ -204,6 +205,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             if (newInt == 1) {
                 Toast.makeText(this, getString(R.string.editor_update_success),
                         Toast.LENGTH_SHORT).show();
+                finish();
             } else {
                 // If the new content URI is null, then there was an error with insertion.
                 Toast.makeText(this, getString(R.string.editor_action_failed),
@@ -228,7 +230,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case R.id.action_save:
                 saveEntry();
                 //Exit activity, jumping back to previous activity
-                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
@@ -289,7 +290,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         // Auto populate the Edit Text fields
         mNameEditText.setText(cursorName);
-        Log.i(LOG_TAG, "cursor Name is " + cursorName);
         mSummaryEditText.setText(cursorSummary);
         mQuantityEditText.setText(Integer.toString(cursorQuantity));
         mPriceEditText.setText(Integer.toString(cursorPrice));
@@ -503,7 +503,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             Toast.makeText(this, R.string.editor_action_failed, Toast.LENGTH_SHORT).show();
         }
     }
-
 
     /**
      * Sends the supplier number to the phone app, used DIAL instead of CALL to allow user to decide
